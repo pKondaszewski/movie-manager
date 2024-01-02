@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:latest
+    hostname: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: db_name
+      MYSQL_ROOT_PASSWORD: db_root_password
+      MYSQL_USER: db_username
+      MYSQL_PASSWORD: db_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/db_name
+    username: root
+    password: db_root_password
+    ddl-auto: validate
