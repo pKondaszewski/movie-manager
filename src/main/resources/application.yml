@@ -4,3 +4,10 @@ spring:
     username: root
     password: db_root_password
     ddl-auto: validate
+  jackson:
+    property-naming-strategy: LOWER_CAMEL_CASE
+
+ombd:
+  api:
+    key: 823741de
+    url: http://www.omdbapi.com
