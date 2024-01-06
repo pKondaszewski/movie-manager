@@ -2,6 +2,7 @@ package pl.przemek.moviemanager.service.ombd.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import lombok.RequiredArgsConstructor;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicHeader;
@@ -24,11 +25,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class OmbdApiClient {
-
-    private final HttpClient httpClient = HttpClient.newBuilder().build();
     private final ObjectMapper objectMapper = new ObjectMapper()
             .setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
+    private final HttpClient httpClient;
+
     @Value("${ombd.api.url}")
     private String apiUrl;
     @Value("${ombd.api.key}")
@@ -38,7 +40,7 @@ public class OmbdApiClient {
         try {
             List<NameValuePair> urlParams = prepareSingleMovieSearchParams(id, movieTitle, typeOfResult, releaseYear);
             HttpRequest request = prepareHttpRequest(urlParams);
-            return getSingleMovieParsedResponse(request);
+            return getParsedResponse(request, MovieDTO.class);
         } catch (IllegalArgumentException e) {
             throw new OmbdApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -50,9 +52,7 @@ public class OmbdApiClient {
         try {
             List<NameValuePair> urlParams = prepareListMovieSearchParams(movieTitle, typeOfResult, releaseYear);
             HttpRequest request = prepareHttpRequest(urlParams);
-            return getListOfMoviesParsedResponse(request);
-        } catch (IllegalArgumentException e) {
-            throw new OmbdApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST);
+            return getParsedResponse(request, MoviesListDTO.class);
         } catch (Exception e) {
             throw new OmbdApiException(e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -61,8 +61,8 @@ public class OmbdApiClient {
     private List<NameValuePair> prepareSingleMovieSearchParams(String id, String movieTitle, MovieType typeOfResult, Year releaseYear) {
         List<NameValuePair> urlParams = new ArrayList<>();
 
-        addApiKey(urlParams);
         checkRequiredFields(id, movieTitle);
+        addApiKey(urlParams);
         addIdToParamsIfNotNull(id, urlParams);
         addMovieTitleToParamsIfNotNull(movieTitle, urlParams);
         addTypeOfResultToParamsIfNotNull(typeOfResult, urlParams);
@@ -131,13 +131,8 @@ public class OmbdApiClient {
                 .build();
     }
 
-    private MovieDTO getSingleMovieParsedResponse(HttpRequest request) throws IOException, InterruptedException {
-        HttpResponse<String> send = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return objectMapper.readValue(send.body(), MovieDTO.class);
-    }
-
-    private MoviesListDTO getListOfMoviesParsedResponse(HttpRequest request) throws IOException, InterruptedException {
-        HttpResponse<String> send = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return objectMapper.readValue(send.body(), MoviesListDTO.class);
+    private <T> T getParsedResponse(HttpRequest request, Class<T> responseType) throws IOException, InterruptedException {
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return objectMapper.readValue(response.body(), responseType);
     }
 }
