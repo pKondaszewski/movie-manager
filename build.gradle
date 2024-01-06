@@ -32,8 +32,15 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	// tests
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// utils
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+task buildImage(type: Exec) {
+	commandLine "docker", "build", ".", "-t", "${rootProject.name}:latest"
 }
