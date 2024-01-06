@@ -1,5 +1,6 @@
 package pl.przemek.moviemanager.service;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,20 +37,15 @@ public class OmbdApiClientTest {
     @InjectMocks
     private OmbdApiClient omdbApiClient;
 
-    private String randomId;
-    private String randomMovieTitle;
-    private MovieType randomMovieType;
-    private Year randomYear;
-    private String sampleJsonResponseSingleDTO;
-    private String sampleJsonResponseListDTOs;
+    private static String randomId;
+    private static String randomMovieTitle;
+    private static MovieType randomMovieType;
+    private static Year randomYear;
+    private static String sampleJsonResponseSingleDTO;
+    private static String sampleJsonResponseListDTOs;
 
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(omdbApiClient, "apiUrl", "http://mocked-api-url");
-        ReflectionTestUtils.setField(omdbApiClient, "apiKey", "test-api-key");
-
-
+    @BeforeAll
+    static void initVars() {
         randomId = "123";
         randomMovieTitle = "Movie Title";
         randomMovieType = MovieType.MOVIE;
@@ -66,7 +62,12 @@ public class OmbdApiClientTest {
                   "totalResults": "3",
                   "Response": "True"
                 }""";
+    }
 
+    @BeforeEach
+    void setUpProps() {
+        ReflectionTestUtils.setField(omdbApiClient, "apiUrl", "http://mocked-api-url");
+        ReflectionTestUtils.setField(omdbApiClient, "apiKey", "test-api-key");
     }
 
     @Test
