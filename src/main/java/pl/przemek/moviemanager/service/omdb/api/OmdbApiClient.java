@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import pl.przemek.moviemanager.controller.MovieType;
-import pl.przemek.moviemanager.dto.MovieDTO;
-import pl.przemek.moviemanager.dto.MoviesListDTO;
+import pl.przemek.moviemanager.dto.*;
 import pl.przemek.moviemanager.exception.OmdbApiException;
 
 import java.io.IOException;
@@ -38,11 +37,11 @@ public class OmdbApiClient {
     @Value("${omdb.api.key}")
     private String apiKey;
 
-    public MovieDTO getMovieByIdOrTitle(String id, String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
+    public MovieWithResponseStatusDTO getMovieByIdOrTitle(String id, String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
         try {
             List<NameValuePair> urlParams = prepareSingleMovieSearchParams(id, movieTitle, typeOfResult, releaseYear);
             HttpRequest request = prepareHttpRequest(urlParams);
-            return getParsedResponse(request, MovieDTO.class);
+            return getParsedResponse(request, MovieWithResponseStatusDTO.class);
         } catch (IllegalArgumentException e) {
             log.error(e.getMessage());
             throw new OmdbApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST);

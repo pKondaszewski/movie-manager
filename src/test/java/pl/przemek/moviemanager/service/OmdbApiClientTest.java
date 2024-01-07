@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import pl.przemek.moviemanager.controller.MovieType;
+import pl.przemek.moviemanager.dto.MovieWithResponseStatusDTO;
 import pl.przemek.moviemanager.dto.MovieDTO;
 import pl.przemek.moviemanager.dto.MoviesListDTO;
 import pl.przemek.moviemanager.dto.MoviesSingleDTO;
@@ -77,7 +78,7 @@ public class OmdbApiClientTest {
         when(httpResponse.body()).thenReturn(sampleJsonResponseSingleDTO);
 
         // Act
-        MovieDTO result = omdbApiClient.getMovieByIdOrTitle(null, randomMovieTitle, randomMovieType, randomYear);
+        MovieWithResponseStatusDTO result = omdbApiClient.getMovieByIdOrTitle(null, randomMovieTitle, randomMovieType, randomYear);
 
         // Assert
         checkResultDTO(result);
@@ -90,7 +91,7 @@ public class OmdbApiClientTest {
         when(httpResponse.body()).thenReturn(sampleJsonResponseSingleDTO);
 
         // Act
-        MovieDTO result = omdbApiClient.getMovieByIdOrTitle(randomId, null, randomMovieType, randomYear);
+        MovieWithResponseStatusDTO result = omdbApiClient.getMovieByIdOrTitle(randomId, null, randomMovieType, randomYear);
 
         // Assert
         checkResultDTO(result);
@@ -150,12 +151,13 @@ public class OmdbApiClientTest {
         assertEquals(exceptionMessage, exception.getMessage());
     }
 
-    private void checkResultDTO(MovieDTO result) {
-        assertEquals("Movie Title", result.title());
-        assertEquals("Movie Plot", result.plot());
-        assertEquals("Action", result.genre());
-        assertEquals("Director Name", result.director());
-        assertNull(result.poster());
+    private void checkResultDTO(MovieWithResponseStatusDTO dto) {
+        MovieDTO movieDTO = new MovieDTO(dto.title(), dto.plot(), dto.genre(), dto.director(), dto.poster());
+        assertEquals("Movie Title", movieDTO.title());
+        assertEquals("Movie Plot", movieDTO.plot());
+        assertEquals("Action", movieDTO.genre());
+        assertEquals("Director Name", movieDTO.director());
+        assertNull(movieDTO.poster());
     }
 
     private void checkResultDTOs(MoviesListDTO result) {

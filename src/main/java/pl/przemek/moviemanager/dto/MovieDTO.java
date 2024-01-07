@@ -9,4 +9,7 @@ public record MovieDTO(String title,
                        String genre,
                        String director,
                        String poster) {
+    public MovieDTO(MovieWithResponseStatusDTO dto) {
+        this(dto.title(), dto.plot(), dto.genre(), dto.director(), dto.poster());
+    }
 }
