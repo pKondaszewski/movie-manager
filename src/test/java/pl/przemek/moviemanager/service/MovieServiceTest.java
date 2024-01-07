@@ -98,10 +98,10 @@ public class MovieServiceTest {
         when(omdbApiClient.getMoviesByTitleSearch(any(), any(), any())).thenReturn(randomMoviesListDTOs);
 
         // Act
-        MoviesListDTO result = movieService.getMoviesByTitleSearch(randomMovieTitle, randomMovieType, randomYear);
+        List<MoviesSingleDTO> result = movieService.getMoviesByTitleSearch(randomMovieTitle, randomMovieType, randomYear);
 
         // Assert
-        assertEquals(randomMoviesListDTOs, result);
+        assertEquals(randomMoviesListDTOs.search(), result);
     }
 
     @Test

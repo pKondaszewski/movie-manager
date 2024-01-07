@@ -25,15 +25,15 @@ public class MovieService {
     private final ResponseValidator responseValidator;
 
     public MovieDTO getMovieByIdOrTitle(String omdbID, String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
-        MovieWithResponseStatusDTO dto = omdbApiClient.getMovieByIdOrTitle(omdbID, movieTitle, typeOfResult, releaseYear);
-        responseValidator.validateSearchResult(dto);
-        return new MovieDTO(dto);
+        MovieWithResponseStatusDTO movieByIdOrTitle = omdbApiClient.getMovieByIdOrTitle(omdbID, movieTitle, typeOfResult, releaseYear);
+        responseValidator.validateSearchResult(movieByIdOrTitle);
+        return new MovieDTO(movieByIdOrTitle);
     }
 
-    public MoviesListDTO getMoviesByTitleSearch(String title, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
+    public List<MoviesSingleDTO> getMoviesByTitleSearch(String title, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
         MoviesListDTO moviesByTitle = omdbApiClient.getMoviesByTitleSearch(title, typeOfResult, releaseYear);
         responseValidator.validateSearchResult(moviesByTitle);
-        return moviesByTitle;
+        return moviesByTitle.search();
     }
 
     @Transactional

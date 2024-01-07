@@ -34,8 +34,8 @@ public class MovieController {
     public ResponseEntity<List<MoviesSingleDTO>> getMoviesByTitleSearch(@RequestParam String movieTitle,
                                                                    @RequestParam(required = false) MovieType typeOfResult,
                                                                    @RequestParam(required = false) Year releaseYear) throws OmdbApiException {
-        MoviesListDTO moviesByTitle = movieService.getMoviesByTitleSearch(movieTitle, typeOfResult, releaseYear);
-        return ResponseEntity.status(200).body(moviesByTitle.search());
+        List<MoviesSingleDTO> moviesByTitleSearch = movieService.getMoviesByTitleSearch(movieTitle, typeOfResult, releaseYear);
+        return ResponseEntity.status(200).body(moviesByTitleSearch);
     }
 
     @PostMapping(path = "/favourite", produces = MediaType.APPLICATION_JSON_VALUE)

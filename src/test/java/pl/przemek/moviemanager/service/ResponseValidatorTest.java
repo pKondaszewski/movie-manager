@@ -9,7 +9,7 @@ import pl.przemek.moviemanager.service.omdb.api.ResponseValidator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ResponseValidatorTest {
+public class ResponseValidatorTest {
 
     private final ResponseValidator responseValidator = new ResponseValidator();
 
