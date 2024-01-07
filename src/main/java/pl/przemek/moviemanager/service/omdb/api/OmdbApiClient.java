@@ -1,8 +1,9 @@
-package pl.przemek.moviemanager.service.ombd.api;
+package pl.przemek.moviemanager.service.omdb.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.message.BasicHeader;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
 import pl.przemek.moviemanager.controller.MovieType;
 import pl.przemek.moviemanager.dto.MovieDTO;
 import pl.przemek.moviemanager.dto.MoviesListDTO;
-import pl.przemek.moviemanager.exception.OmbdApiException;
+import pl.przemek.moviemanager.exception.OmdbApiException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -26,35 +27,39 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class OmbdApiClient {
+@Slf4j
+public class OmdbApiClient {
     private final ObjectMapper objectMapper = new ObjectMapper()
             .setPropertyNamingStrategy(PropertyNamingStrategies.UPPER_CAMEL_CASE);
     private final HttpClient httpClient;
 
-    @Value("${ombd.api.url}")
+    @Value("${omdb.api.url}")
     private String apiUrl;
-    @Value("${ombd.api.key}")
+    @Value("${omdb.api.key}")
     private String apiKey;
 
-    public MovieDTO getMovieByIdOrTitle(String id, String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmbdApiException {
+    public MovieDTO getMovieByIdOrTitle(String id, String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
         try {
             List<NameValuePair> urlParams = prepareSingleMovieSearchParams(id, movieTitle, typeOfResult, releaseYear);
             HttpRequest request = prepareHttpRequest(urlParams);
             return getParsedResponse(request, MovieDTO.class);
         } catch (IllegalArgumentException e) {
-            throw new OmbdApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST);
+            log.error(e.getMessage());
+            throw new OmdbApiException(e.getMessage(), e, HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
-            throw new OmbdApiException(e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error(e.getMessage());
+            throw new OmdbApiException(e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public MoviesListDTO getMoviesByTitle(String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmbdApiException {
+    public MoviesListDTO getMoviesByTitleSearch(String movieTitle, MovieType typeOfResult, Year releaseYear) throws OmdbApiException {
         try {
             List<NameValuePair> urlParams = prepareListMovieSearchParams(movieTitle, typeOfResult, releaseYear);
             HttpRequest request = prepareHttpRequest(urlParams);
             return getParsedResponse(request, MoviesListDTO.class);
         } catch (Exception e) {
-            throw new OmbdApiException(e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error(e.getMessage());
+            throw new OmdbApiException(e.getMessage(), e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

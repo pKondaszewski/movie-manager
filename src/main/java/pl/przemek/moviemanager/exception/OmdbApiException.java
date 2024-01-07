@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @NoArgsConstructor
-public class OmbdApiException extends Exception {
+public class OmdbApiException extends Exception {
 
     private HttpStatus httpStatus;
 
-    public OmbdApiException(String message, Throwable cause, HttpStatus httpStatus) {
+    public OmdbApiException(String message, Throwable cause, HttpStatus httpStatus) {
         super(message, cause);
         this.httpStatus = httpStatus;
     }

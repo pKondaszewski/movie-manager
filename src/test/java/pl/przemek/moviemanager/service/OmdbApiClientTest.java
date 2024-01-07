@@ -12,7 +12,7 @@ import pl.przemek.moviemanager.controller.MovieType;
 import pl.przemek.moviemanager.dto.MovieDTO;
 import pl.przemek.moviemanager.dto.MoviesListDTO;
 import pl.przemek.moviemanager.dto.MoviesSingleDTO;
-import pl.przemek.moviemanager.service.ombd.api.OmbdApiClient;
+import pl.przemek.moviemanager.service.omdb.api.OmdbApiClient;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -26,7 +26,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OmbdApiClientTest {
+public class OmdbApiClientTest {
 
     @Mock
     private HttpClient httpClient;
@@ -35,7 +35,7 @@ public class OmbdApiClientTest {
     private HttpResponse<String> httpResponse;
 
     @InjectMocks
-    private OmbdApiClient omdbApiClient;
+    private OmdbApiClient omdbApiClient;
 
     private static String randomId;
     private static String randomMovieTitle;
@@ -108,13 +108,13 @@ public class OmbdApiClientTest {
     }
 
     @Test
-    void shouldReturnCorrectMoviesDtosWhenGetMoviesByTitle() throws Exception {
+    void shouldReturnCorrectMoviesDtosWhenGetMoviesByTitleSearch() throws Exception {
         // Arrange
         when(httpClient.send(any(), eq(HttpResponse.BodyHandlers.ofString()))).thenReturn(httpResponse);
         when(httpResponse.body()).thenReturn(sampleJsonResponseListDTOs);
 
         // Act
-        MoviesListDTO result = omdbApiClient.getMoviesByTitle(randomMovieTitle, randomMovieType, randomYear);
+        MoviesListDTO result = omdbApiClient.getMoviesByTitleSearch(randomMovieTitle, randomMovieType, randomYear);
 
         // Assert
         checkResultDTOs(result);
@@ -143,7 +143,7 @@ public class OmbdApiClientTest {
 
         // Act
         Exception exception = assertThrows(Exception.class, () ->
-                omdbApiClient.getMoviesByTitle(randomMovieTitle, randomMovieType, randomYear)
+                omdbApiClient.getMoviesByTitleSearch(randomMovieTitle, randomMovieType, randomYear)
         );
 
         // Assert

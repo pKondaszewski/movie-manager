@@ -7,7 +7,7 @@ spring:
   jackson:
     property-naming-strategy: LOWER_CAMEL_CASE
 
-ombd:
+omdb:
   api:
     key: 823741de
     url: http://www.omdbapi.com
