@@ -11,8 +11,28 @@ services:
       MYSQL_ROOT_PASSWORD: db_root_password
       MYSQL_USER: db_username
       MYSQL_PASSWORD: db_password
+    profiles:
+      - dev
+      - dependencies
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  movie-manager:
+    image: movie-manager:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+    profiles:
+      - dev
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 volumes:
   mysql_data:
