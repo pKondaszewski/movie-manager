@@ -39,7 +39,7 @@ Flyway ✈️
 ## How to run ▶️
 ### Docker way 🐋 🐋 🐋
 
-    build movie-manager docker image -> ./gradlew buildImage
+    build movie-manager docker image -> docker build . -t movie-manager:latest
     
     enter etc dir -> cd etc
     
